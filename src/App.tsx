@@ -1,27 +1,24 @@
-import { BrowserRouter } from 'react-router-dom'
-import Theme from '@/components/template/Theme'
-import Layout from '@/components/layouts'
-import { AuthProvider } from '@/auth'
-import Views from '@/views'
-import appConfig from './configs/app.config'
-import './locales'
-
-if (appConfig.enableMock) {
-    import('./mock')
-}
+// App.tsx
+import { Suspense } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import sharedRoutes from './configs/routes.config/sharedRoutes' 
 
 function App() {
-    return (
-        <Theme>
-            <BrowserRouter>
-                <AuthProvider>
-                    <Layout>
-                        <Views />
-                    </Layout>
-                </AuthProvider>
-            </BrowserRouter>
-        </Theme>
-    )
+  return (
+    <BrowserRouter>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          {sharedRoutes.map((route) => (
+            <Route
+              key={route.key}
+              path={route.path}
+              element={<route.component {...(route.meta || {})} />}
+            />
+          ))}
+        </Routes>
+      </Suspense>
+    </BrowserRouter>
+  )
 }
 
 export default App
